@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <title>Jedi Academy CTF</title>
+    <link rel="icon" href="flaticon79742.ico" type="image/x-icon">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <style>
+        /* Dark Mode Variables */
+        :root {
+            --bg-page: #111111;
+            --text-color: #ffffff;
+            --navbar-bg: #222222;
+            --blue-bg: #2c3e50;
+            --cream-bg: #3a3a3a;
+            --gold-start: #001D32;
+            --gold-end: #001D32;
+            --offense-card-bg: #2a3a2a;
+            --offense-card-border: #4a4a4a;
+            --base-card-bg: #2a2a3a;
+            --base-card-border: #4a4a4a;
+            --chase-card-bg: #3a2a3a;
+            --chase-card-border: #4a4a4a;
+            --hr-color: rgba(255, 255, 255, 0.3);
+            --muted-text-color: #b3b3b3;
+            --video-overlay-color: rgba(0, 0, 0, 0.5);
+            --header-text-outline: rgba(0, 0, 0, 0.8);
+        }
+
+        /* Base styling that references variables */
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+        }
+        /* Button Styles */
+        .btn-primary {
+            background: linear-gradient(90deg, #2196f3, #1976d2); /* Blue gradient */
+            border: none;
+            color: #fff;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+            box-shadow: 0 0 50px rgba(33, 150, 243, 0.5), /* Glow */
+            0 0 50px rgba(33, 150, 243, 0.3), /* Additional glow */
+            0 5px 10px rgba(0, 0, 0, 0.5); /* Subtle dark shadow for foreground effect */
+            transition: background 0.4s ease, box-shadow 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            background-size: 200%;
+            animation: glow-normal 3s infinite ease-in-out; /* Subtle glow animation for normal state */
+        }
+
+            .btn-primary:hover {
+                background: linear-gradient(90deg, #28a745, #34d058, #28a745);
+                background-size: 200%;
+                animation: gradient-scroll 2s infinite linear, glow-hover 2s infinite ease-in-out; /* Glow + gradient scroll animation */
+                box-shadow: 0 0 60px rgba(40, 167, 69, 0.8), /* Glow */
+                0 0 60px rgba(40, 167, 69, 0.5), /* Additional glow */
+                0 6px 12px rgba(0, 0, 0, 0.5); /* Slightly larger dark shadow for hover */
+            }
+
+            .btn-primary:active {
+                background: linear-gradient(90deg, #388e3c, #4caf50, #388e3c);
+                animation: glow-active 1.5s infinite ease-in-out; /* Subtle glow animation for active state */
+                box-shadow: 0 0 40px rgba(40, 167, 69, 0.4), /* Glow */
+                0 0 40px rgba(40, 167, 69, 0.2), /* Additional glow */
+                0 4px 8px rgba(0, 0, 0, 0.5); /* Slightly smaller dark shadow for active state */
+            }
+
+        /* Keyframes for subtle glowing animations */
+        @keyframes glow-normal {
+            0% {
+                box-shadow: 0 0 50px rgba(33, 150, 243, 0.5), 0 0 50px rgba(33, 150, 243, 0.3), 0 5px 10px rgba(0, 0, 0, 0.5);
+            }
+
+            50% {
+                box-shadow: 0 0 55px rgba(33, 150, 243, 0.6), 0 0 55px rgba(33, 150, 243, 0.4), 0 6px 12px rgba(0, 0, 0, 0.5);
+            }
+
+            100% {
+                box-shadow: 0 0 50px rgba(33, 150, 243, 0.5), 0 0 50px rgba(33, 150, 243, 0.3), 0 5px 10px rgba(0, 0, 0, 0.5);
+            }
+        }
+
+        @keyframes glow-hover {
+            0% {
+                box-shadow: 0 0 60px rgba(40, 167, 69, 0.8), 0 0 60px rgba(40, 167, 69, 0.5), 0 6px 12px rgba(0, 0, 0, 0.5);
+            }
+
+            50% {
+                box-shadow: 0 0 65px rgba(40, 167, 69, 0.9), 0 0 65px rgba(40, 167, 69, 0.6), 0 8px 14px rgba(0, 0, 0, 0.5);
+            }
+
+            100% {
+                box-shadow: 0 0 60px rgba(40, 167, 69, 0.8), 0 0 60px rgba(40, 167, 69, 0.5), 0 6px 12px rgba(0, 0, 0, 0.5);
+            }
+        }
+
+        @keyframes glow-active {
+            0% {
+                box-shadow: 0 0 40px rgba(40, 167, 69, 0.4), 0 0 40px rgba(40, 167, 69, 0.2), 0 4px 8px rgba(0, 0, 0, 0.5);
+            }
+
+            50% {
+                box-shadow: 0 0 45px rgba(40, 167, 69, 0.5), 0 0 45px rgba(40, 167, 69, 0.3), 0 5px 10px rgba(0, 0, 0, 0.5);
+            }
+
+            100% {
+                box-shadow: 0 0 40px rgba(40, 167, 69, 0.4), 0 0 40px rgba(40, 167, 69, 0.2), 0 4px 8px rgba(0, 0, 0, 0.5);
+            }
+        }
+
+        /* Gradient Scroll Keyframes */
+        @keyframes gradient-scroll {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            100% {
+                background-position: 200% 50%;
+            }
+        }
+
+
+
+
+        /* Keyframes for Gradient Animation */
+        @keyframes gradient-scroll {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            100% {
+                background-position: 200% 50%;
+            }
+        }
+
+        /* Navbar Styles (Removed but kept for reference if needed) */
+        /*
+        nav.navbar {
+            background-color: var(--navbar-bg) !important;
+        }
+        .navbar-brand, .nav-link {
+            color: var(--text-color) !important;
+        }
+        .navbar-toggler {
+            border-color: var(--text-color);
+        }
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='rgba(255,255,255,1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+        }
+        */
+
+        .text-muted, small.text-muted {
+            color: var(--muted-text-color) !important;
+        }
+
+        hr {
+            margin-left: 10%;
+            margin-right: 10%;
+            border-top: 1px solid var(--hr-color);
+        }
+
+        .bg-blue {
+            background-color: var(--blue-bg) !important;
+        }
+
+        .bg-cream {
+            background-color: var(--cream-bg) !important;
+        }
+
+        .bg-gold {
+            background: linear-gradient(to bottom, var(--gold-start), var(--gold-end)) !important;
+        }
+
+
+            .bg-gold.py-5 {
+                min-height: 50vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+            }
+
+        .gameplay-section-wrapper {
+            background-image: url('img/img2.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-blend-mode: darken;
+            background-color: rgba(34, 34, 34, 0.5);
+            width: 100%; /* Changed from 100vw to 100% */
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 0;
+        }
+
+
+        .positions-section-wrapper {
+            background-image: url('img/krildorcropped.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-blend-mode: darken;
+            background-color: rgba(34, 34, 34, 0.5);
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .gameplay-section {
+            background-color: rgba(34, 34, 34, 0.7);
+            color: var(--text-color);
+            padding: 3rem 1rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
+        }
+
+        .positions-section {
+            background-color: rgba(34, 34, 34, 0.7);
+            color: var(--text-color);
+            padding: 3rem 1rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 1024px) and (orientation: landscape) {
+            .gameplay-section-wrapper, .positions-section-wrapper {
+                height: auto;
+                padding: 2rem 1rem;
+                align-items: flex-start;
+            }
+
+            .gameplay-section, .positions-section {
+                padding: 2rem 1rem;
+                margin: 0 auto;
+                max-width: 80%;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            }
+        }
+
+        @media (max-height: 600px) {
+            .gameplay-section-wrapper, .positions-section-wrapper {
+                height: auto;
+                padding: 1.5rem 1rem;
+                align-items: flex-start;
+            }
+
+            .gameplay-section, .positions-section {
+                padding: 1.5rem 1rem;
+                max-width: 85%;
+            }
+        }
+
+        .card-offense, .card-base, .card-chase {
+            color: var(--text-color) !important;
+            background-clip: border-box;
+        }
+
+        .card-offense {
+            background-color: rgba(42, 58, 42, 0.7);
+            border: 1px solid var(--offense-card-border);
+        }
+
+        .card-base {
+            background-color: rgba(42, 42, 58, 0.7);
+            border: 1px solid var(--base-card-border);
+        }
+
+        .card-chase {
+            background-color: rgba(58, 42, 58, 0.7);
+            border: 1px solid var(--chase-card-border);
+        }
+
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        /* Base styles for all cards */
+        .card-offense, .card-base, .card-chase {
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease; /* Smooth interactions */
+            border: 1px solid transparent; /* Neutral border */
+            will-change: transform, box-shadow; /* Optimize performance */
+            color: var(--text-color); /* Retain text color */
+        }
+
+        /* Ensure cards keep their original background color during interaction */
+        .card-offense {
+            background-color: rgba(42, 58, 42, 0.7); /* Dark green */
+        }
+
+        .card-base {
+            background-color: rgba(42, 42, 58, 0.7); /* Dark blue */
+        }
+
+        .card-chase {
+            background-color: rgba(58, 42, 58, 0.7); /* Dark magenta */
+        }
+
+
+
+        /* Tap and hover glow effects with brighter matching colors and extended glow */
+        .card-offense:hover, .card-offense:active {
+            box-shadow: 0 0 35px 15px rgba(76, 175, 80, 0.8), 0 0 25px rgba(76, 175, 80, 0.6); /* Brighter green glow extending upward */
+           
+            background-color: rgba(50, 100, 50, 1); /* Slightly brighter green */
+        }
+
+        .card-base:hover, .card-base:active {
+            box-shadow: 0 0 35px 15px rgba(66, 165, 245, 0.8), 0 0 25px rgba(66, 165, 245, 0.6); /* Brighter blue glow extending upward */
+            background-color: rgba(40, 90, 140, 1); /* Slightly brighter blue */
+        }
+
+        .card-chase:hover, .card-chase:active {
+            box-shadow: 0 0 35px 15px rgba(233, 30, 99, 0.8), 0 0 25px rgba(233, 30, 99, 0.6); /* Brighter magenta glow extending upward */
+            background-color: rgba(120, 40, 80, 1); /* Slightly brighter magenta */
+        }
+
+        /* Mobile and touch consistency (use active for tap feedback) */
+        @media (hover: none) {
+            .card-offense:active, .card-base:active, .card-chase:active {
+                transform: scale(0.98); /* Slight compression effect for taps */
+                box-shadow: 0 0 25px rgba(0, 0, 0, 0.5); /* Subtle tap shadow for feedback */
+                background-color: inherit; /* Keep the same card color */
+            }
+        }
+
+        .card-offense,
+        .card-base,
+        .card-chase {
+            cursor: default; /* Ensures the cursor stays as an arrow */
+        }
+
+            .card-offense .card-text,
+            .card-base .card-text,
+            .card-chase .card-text {
+                pointer-events: none; /* Prevent text selection cursor */
+            }
+
+
+        .zoom-cursor {
+            cursor: zoom-in;
+        }
+
+        .modal-dialog {
+            max-width: 70%;
+            margin: auto;
+        }
+
+        @media (max-width: 768px) {
+            .modal-dialog {
+                max-width: 95%;
+            }
+        }
+
+        .modal-body img {
+            width: 100%;
+            height: auto;
+            max-height: 90vh;
+            object-fit: contain;
+        }
+
+        .still-reading {
+            font-size: 0.75rem;
+            margin-top: auto;
+            padding-bottom: 1rem;
+            text-align: center; /* Ensures text is centered */
+            display: block; /* Ensures it's treated as a block element */
+            width: 100%; /* Takes up the full width of the parent container */
+        }
+
+
+            .still-reading a {
+                color: #ffcc00;
+                text-decoration: underline;
+            }
+
+                .still-reading a:hover {
+                    color: #ffc107;
+                    text-decoration: none;
+                }
+
+        /* Ensuring the header section takes the full viewport height in all orientations */
+        .header-section {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            background-color: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Video Styling for Mobile Portrait */
+        .header-video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Crop the video horizontally */
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Overlay remains consistent */
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+            background-color: var(--video-overlay-color);
+            transition: background-color 0.3s ease;
+            display: block;
+        }
+
+        /* Header content remains centered */
+        .header-content {
+            position: relative;
+            z-index: 2;
+            color: var(--text-color);
+            text-align: center;
+            max-width: 800px;
+            margin: auto;
+            text-shadow: 1px 1px 2px var(--header-text-outline);
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .header-section {
+                height: 100vh; /* Ensure full-screen header for mobile portrait */
+            }
+
+            .header-content h1 {
+                font-size: 2rem;
+            }
+
+            .header-content p {
+                font-size: 1rem;
+            }
+
+            .header-content .btn {
+                font-size: 1rem;
+                padding: 0.5rem 1rem;
+            }
+        }
+
+
+      
+
+
+
+       
+
+      
+
+    
+
+        /* Fade-to-Black Effect */
+        .fade-top, .fade-bottom {
+            position: relative;
+            overflow: hidden; /* Ensures pseudo-elements stay inside the section */
+        }
+
+            .fade-top::before, .fade-bottom::after {
+                content: "";
+                position: absolute;
+                left: 0;
+                width: 100%;
+                height: 5px; /* Shorter fade (adjust as needed) */
+                pointer-events: none; /* Ensure clicks pass through */
+                z-index: 2; /* Ensure fade appears above the content */
+            }
+
+            .fade-top::before {
+                top: 0;
+                background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0)); /* Gradual fade */
+            }
+
+            .fade-bottom::after {
+                bottom: 0;
+                background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.8)); /* Gradual fade */
+            }
+
+        /* Updated class for Screenshots section with only the tiled stars background */
+        .screenshot-bg {
+            background-image: url('img/stars.jpg'); /* Use only the stars image */
+            background-size: auto; /* Retain the original size of the stars image */
+            background-repeat: repeat; /* Tile the stars image */
+            background-position: top left; /* Start tiling from the top-left corner */
+            padding: 3rem 1rem; /* Retain existing padding */
+            padding-bottom: 0; /* Remove bottom padding */
+        }
+
+
+            .screenshot-bg::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(44, 62, 80, 0.5); /* 70% opaque blue overlay */
+                z-index: 1; /* Place overlay below the content */
+            }
+
+            .screenshot-bg > .container {
+                position: relative;
+                z-index: 2; /* Ensure content is above the overlay */
+            }
+
+
+
+        /* Optional: Adjust the opacity of the overlay on hover or other interactions */
+        /* .screenshot-bg:hover {
+    background-blend-mode: multiply;
+} */
+
+
+    </style>
+
+</head>
+<body>
+    <!-- Header Section -->
+    <div class="header-section fade-bottom">
+        <div class="video-overlay"></div>
+        <video id="backgroundVideo" class="header-video" autoplay loop muted playsinline preload="auto">
+            <source src="background-high.mp4" type="video/mp4">
+            <source src="background-high.webm" type="video/webm">
+            Your browser does not support the video tag.
+        </video>
+        <div class="header-content container my-3">
+            <h1>We still play Jedi&nbsp;Academy CTF.</h1>
+            <p>And you should too!</p>
+            <a href="https://discord.gg/24XMBrQ" class="btn btn-primary btn-lg px-5 py-3">
+                <i class="fab fa-discord"></i> Join the Discord and start&nbsp;playing!
+            </a>
+        </div>
+    </div>
+
+    <!-- Gameplay Description -->
+    <div class="gameplay-section-wrapper fade-top fade-bottom">
+        <div class="container text-center gameplay-section">
+            <h2 class="mb-4"><i class="fas fa-flag"></i> Why you should play JA&nbsp;CTF</h2>
+            <p><strong>Fast-paced, competitive 4v4 matches</strong> that test your movement, aim, and teamwork skills.</p>
+            <p><strong>All force powers + guns enabled</strong>: the awesome way JA was meant to be played.</p>
+            <p><strong>Customizable loadouts</strong>: swap between different lightside and darkside loadouts on the fly.</p>
+            <p>Our <strong>custom server</strong> features an automatic team generator, team-based map bans and voting, and more.</p>
+            <p>Our <strong>custom client mod</strong>, in development for 10+&nbsp;years, modernizes JA with automatic map&nbsp;downloading and many features, fixes, and graphical enhancements.</p>
+        </div>
+    </div>
+
+    <!-- Positions Section -->
+    <div class="positions-section-wrapper fade-top fade-bottom">
+        <div class="container text-center positions-section">
+            <h2 class="mb-4"><i class="fas fa-check-circle"></i> Pick your favorite position!</h2>
+            <p>There are three positions in 4v4&nbsp;JA&nbsp;CTF. Which one best suits you?</p>
+            <div class="row">
+                <!-- Offense -->
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100 card-offense">
+                        <div class="card-body">
+                            <i class="fas fa-flag fa-2x mb-3"></i>
+                            <h3 class="card-title">Offense</h3>
+                            <p class="card-text">The two offense players <strong>steal the enemy&nbsp;flag</strong> and bring it home.</p><p class="card-text">This position emphasizes fast, elusive movement and requires the two offense&nbsp;partners to work in&nbsp;tandem.</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Base Defense -->
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100 card-base">
+                        <div class="card-body">
+                            <i class="fas fa-shield-alt fa-2x mb-3"></i>
+                            <h3 class="card-title">Base</h3>
+                            <p class="card-text">The base&nbsp;defender <strong>clears enemies</strong> in the base and <strong>supports the flag&nbsp;carrier</strong>.</p><p class="card-text">This position emphasizes flexibility and awareness, requiring players to switch between clearing&nbsp;enemies and supporting the flag&nbsp;carrier.</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Chase Defense -->
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100 card-chase">
+                        <div class="card-body">
+                            <i class="fas fa-running fa-2x mb-3"></i>
+                            <h3 class="card-title">Chase</h3>
+                            <p class="card-text">The chase&nbsp;defender <strong>pursues the enemy flag&nbsp;carrier</strong> and recovers the flag.</p><p class="card-text">This position emphasizes accurate&nbsp;aim and fast&nbsp;movement.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Call to Action -->
+    <div class="bg-gold py-5 fade-top fade-bottom">
+        <div class="container text-center">
+            <h2 class="mb-4"><i class="fas fa-gamepad"></i> Start playing!</h2>
+            <p>You don&#39;t need any experience to start playing JA&nbsp;CTF! We&#39;ll help you learn everything you need to know.</p>
+            <p>All you need to do is <strong>join the Discord</strong> and we&#39;ll get you set up!</p>
+            <div class="my-3">
+                <a href="https://discord.gg/24XMBrQ"
+                   class="btn btn-primary btn-lg px-5 py-3"
+                   style="font-size:1.5rem;">
+                    <i class="fab fa-discord"></i> Join the Discord and start&nbsp;playing!
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Screenshot Showcase -->
+    <div class="screenshot-bg py-5 fade-top">
+        <div class="container my-5 text-center">
+            <h2 class="mb-4"><i class="fas fa-camera"></i> Screenshots</h2>
+            <div class="row">
+                <!-- Screenshot 1 -->
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                    <div class="ratio ratio-16x9">
+                        <img loading="lazy"
+                             src="img/img1-640.jpg"
+                             srcset="
+                            img/img1-320.jpg 320w,
+                            img/img1-640.jpg 640w,
+                            img/img1-1280.jpg 1280w,
+                            img/img1-1920.jpg 1920w
+                         "
+                             sizes="(max-width: 600px) 100vw,
+                                (max-width: 1200px) 50vw,
+                                25vw"
+                             class="img-fluid zoom-cursor"
+                             data-bs-toggle="modal"
+                             data-bs-target="#imageModal1"
+                             alt="Screenshot 1">
+                    </div>
+                </div>
+                <!-- Screenshot 2 -->
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                    <div class="ratio ratio-16x9">
+                        <img loading="lazy"
+                             src="img/img2-640.jpg"
+                             srcset="
+                            img/img2-320.jpg 320w,
+                            img/img2-640.jpg 640w,
+                            img/img2-1280.jpg 1280w,
+                            img/img2-1920.jpg 1920w
+                         "
+                             sizes="(max-width: 600px) 100vw,
+                                (max-width: 1200px) 50vw,
+                                25vw"
+                             class="img-fluid zoom-cursor"
+                             data-bs-toggle="modal"
+                             data-bs-target="#imageModal2"
+                             alt="Screenshot 2">
+                    </div>
+                </div>
+                <!-- Screenshot 3 -->
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                    <div class="ratio ratio-16x9">
+                        <img loading="lazy"
+                             src="img/img3-640.jpg"
+                             srcset="
+                            img/img3-320.jpg 320w,
+                            img/img3-640.jpg 640w,
+                            img/img3-1280.jpg 1280w,
+                            img/img3-1920.jpg 1920w
+                         "
+                             sizes="(max-width: 600px) 100vw,
+                                (max-width: 1200px) 50vw,
+                                25vw"
+                             class="img-fluid zoom-cursor"
+                             data-bs-toggle="modal"
+                             data-bs-target="#imageModal3"
+                             alt="Screenshot 3">
+                    </div>
+                </div>
+                <!-- Screenshot 4 -->
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                    <div class="ratio ratio-16x9">
+                        <img loading="lazy"
+                             src="img/img4-640.jpg"
+                             srcset="
+                            img/img4-320.jpg 320w,
+                            img/img4-640.jpg 640w,
+                            img/img4-1280.jpg 1280w,
+                            img/img4-1920.jpg 1920w
+                         "
+                             sizes="(max-width: 600px) 100vw,
+                                (max-width: 1200px) 50vw,
+                                25vw"
+                             class="img-fluid zoom-cursor"
+                             data-bs-toggle="modal"
+                             data-bs-target="#imageModal4"
+                             alt="Screenshot 4">
+                    </div>
+                </div>
+                <!-- Screenshot 5 -->
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                    <div class="ratio ratio-16x9">
+                        <img loading="lazy"
+                             src="img/img5-640.jpg"
+                             srcset="
+                            img/img5-320.jpg 320w,
+                            img/img5-640.jpg 640w,
+                            img/img5-1280.jpg 1280w,
+                            img/img5-1920.jpg 1920w
+                         "
+                             sizes="(max-width: 600px) 100vw,
+                                (max-width: 1200px) 50vw,
+                                25vw"
+                             class="img-fluid zoom-cursor"
+                             data-bs-toggle="modal"
+                             data-bs-target="#imageModal5"
+                             alt="Screenshot 5">
+                    </div>
+                </div>
+                <!-- Screenshot 6 -->
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                    <div class="ratio ratio-16x9">
+                        <img loading="lazy"
+                             src="img/img6-640.jpg"
+                             srcset="
+                            img/img6-320.jpg 320w,
+                            img/img6-640.jpg 640w,
+                            img/img6-1280.jpg 1280w,
+                            img/img6-1920.jpg 1920w
+                         "
+                             sizes="(max-width: 600px) 100vw,
+                                (max-width: 1200px) 50vw,
+                                25vw"
+                             class="img-fluid zoom-cursor"
+                             data-bs-toggle="modal"
+                             data-bs-target="#imageModal6"
+                             alt="Screenshot 6">
+                    </div>
+                </div>
+                <!-- Screenshot 7 -->
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                    <div class="ratio ratio-16x9">
+                        <img loading="lazy"
+                             src="img/img7-640.jpg"
+                             srcset="
+                            img/img7-320.jpg 320w,
+                            img/img7-640.jpg 640w,
+                            img/img7-1280.jpg 1280w,
+                            img/img7-1920.jpg 1920w
+                         "
+                             sizes="(max-width: 600px) 100vw,
+                                (max-width: 1200px) 50vw,
+                                25vw"
+                             class="img-fluid zoom-cursor"
+                             data-bs-toggle="modal"
+                             data-bs-target="#imageModal7"
+                             alt="Screenshot 7">
+                    </div>
+                </div>
+                <!-- Screenshot 8 -->
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                    <div class="ratio ratio-16x9">
+                        <img loading="lazy"
+                             src="img/img8-640.jpg"
+                             srcset="
+                            img/img8-320.jpg 320w,
+                            img/img8-640.jpg 640w,
+                            img/img8-1280.jpg 1280w,
+                            img/img8-1920.jpg 1920w
+                         "
+                             sizes="(max-width: 600px) 100vw,
+                                (max-width: 1200px) 50vw,
+                                25vw"
+                             class="img-fluid zoom-cursor"
+                             data-bs-toggle="modal"
+                             data-bs-target="#imageModal8"
+                             alt="Screenshot 8">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <small class="text-muted still-reading" style="font-size:0.75rem;">
+                Still&nbsp;reading? <a href="https://discord.gg/24XMBrQ">Join the Discord</a> and start&nbsp;playing!
+            </small>
+
+        </div>
+
+        <!-- Subtle "Demo Archive" link -->
+        <div style="position: absolute; z-index: 2; text-align: right; margin-top: 1rem;">
+            <a href="https://demos.jactf.com/match.html" style="font-size: 0.75rem; color: rgba(255, 255, 255, 0.5); text-decoration: none;">Demo Archive</a>
+        </div>
+
+
+
+    </div>
+
+    <!-- Modals for each screenshot -->
+    <div class="modal fade" id="imageModal1" tabindex="-1" aria-labelledby="imageModal1Label" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-body p-0">
+                    <img src="img/img1.jpg" class="img-fluid" alt="Screenshot 1 Large">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="imageModal2" tabindex="-1" aria-labelledby="imageModal2Label" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-body p-0">
+                    <img src="img/img2.jpg" class="img-fluid" alt="Screenshot 2 Large">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="imageModal3" tabindex="-1" aria-labelledby="imageModal3Label" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-body p-0">
+                    <img src="img/img3.jpg" class="img-fluid" alt="Screenshot 3 Large">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="imageModal4" tabindex="-1" aria-labelledby="imageModal4Label" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-body p-0">
+                    <img src="img/img4.jpg" class="img-fluid" alt="Screenshot 4 Large">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="imageModal5" tabindex="-1" aria-labelledby="imageModal5Label" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-body p-0">
+                    <img src="img/img5.jpg" class="img-fluid" alt="Screenshot 5 Large">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="imageModal6" tabindex="-1" aria-labelledby="imageModal6Label" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-body p-0">
+                    <img src="img/img6.jpg" class="img-fluid" alt="Screenshot 6 Large">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="imageModal7" tabindex="-1" aria-labelledby="imageModal7Label" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-body p-0">
+                    <img src="img/img7.jpg" class="img-fluid" alt="Screenshot 7 Large">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="imageModal8" tabindex="-1" aria-labelledby="imageModal8Label" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-body p-0">
+                    <img src="img/img8.jpg" class="img-fluid" alt="Screenshot 8 Large">
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const videoElement = document.getElementById("backgroundVideo");
+
+            // Check if the video element exists
+            if (!videoElement) {
+                console.error("Video element with ID 'backgroundVideo' not found.");
+                return;
+            }
+
+            const videoSources = videoElement.getElementsByTagName("source");
+
+            // Check connection type using navigator.connection API
+            const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+
+            if (connection) {
+                const effectiveType = connection.effectiveType; // e.g., '4g', '3g', '2g', 'slow-2g'
+
+                if (effectiveType.includes("cellular") || effectiveType.includes("2g") || effectiveType.includes("3g")) {
+                    // Load low-quality video
+                    videoSources[0].src = "background-low.mp4";
+                    videoSources[1].src = "background-low.webm";
+                    console.log("Loading low-quality video: background-low.mp4 and background-low.webm");
+                } else {
+                    // Load high-quality video
+                    videoSources[0].src = "background-high.mp4";
+                    videoSources[1].src = "background-high.webm";
+                    console.log("Loading high-quality video: background-high.mp4 and background-high.webm");
+                }
+
+                // Reload the video with the appropriate sources
+                videoElement.load();
+            } else {
+                console.warn("Connection type not detected. Defaulting to high-quality video.");
+                console.log("Loading high-quality video: background-high.mp4 and background-high.webm");
+            }
+        });
+
+
+    </script>
+
+    <!-- Preload full-size modal images -->
+    <link rel="preload" href="img/img1.jpg" as="image">
+    <link rel="preload" href="img/img2.jpg" as="image">
+    <link rel="preload" href="img/img3.jpg" as="image">
+    <link rel="preload" href="img/img4.jpg" as="image">
+    <link rel="preload" href="img/img5.jpg" as="image">
+    <link rel="preload" href="img/img6.jpg" as="image">
+    <link rel="preload" href="img/img7.jpg" as="image">
+    <link rel="preload" href="img/img8.jpg" as="image">
+
+    <link rel="preload" href="img/krildorcropped.jpg" as="image">
+</body>
+</html>
